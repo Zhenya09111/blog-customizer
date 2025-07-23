@@ -1,6 +1,7 @@
 import { OptionType } from 'src/constants/articleProps';
 import { Text } from 'src/ui/text';
 import { Option } from './Option';
+import { useRef } from 'react';
 
 import styles from './RadioGroup.module.scss';
 
@@ -8,14 +9,18 @@ type RadioGroupProps = {
 	name: string;
 	options: OptionType[];
 	selected: OptionType;
-	onChange?: (value: OptionType) => void;
+	onChange?: (option: OptionType, name: string | undefined) => void;
 	title: string;
+	id?: string;
 };
 
 export const RadioGroup = (props: RadioGroupProps) => {
-	const { name, options, selected, onChange, title } = props;
-
-	const handleChange = (option: OptionType) => onChange?.(option);
+	const { name, options, selected, onChange, title, id } = props;
+	const radioGroupRef = useRef<HTMLDivElement>(null);
+	// const handleChange = (option: OptionType) => onChange?.(option);
+	const handleChange = (option: OptionType, name: string | undefined) => {
+		onChange?.(option, name);
+	};
 
 	return (
 		<div className={styles.container}>
@@ -26,7 +31,7 @@ export const RadioGroup = (props: RadioGroupProps) => {
 					</Text>
 				</>
 			)}
-			<div className={styles.group}>
+			<div className={styles.group} ref={radioGroupRef} data-id={id}>
 				{options.map((option) => (
 					<Option
 						key={option.value}
@@ -34,7 +39,9 @@ export const RadioGroup = (props: RadioGroupProps) => {
 						value={option.value}
 						title={option.title}
 						selected={selected}
-						onChange={() => handleChange(option)}
+						onChange={() =>
+							handleChange(option, radioGroupRef.current?.dataset.id)
+						}
 						option={option}
 					/>
 				))}
