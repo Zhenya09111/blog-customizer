@@ -6,8 +6,10 @@ import { useState, useRef } from 'react';
 import styles from './ArticleParamsForm.module.scss';
 import { Select } from 'src/ui/select';
 import {
+	ArticleParamsFormProps,
 	backgroundColors,
 	contentWidthArr,
+	defaultArticleState,
 	fontColors,
 	fontFamilyOptions,
 	fontSizeOptions,
@@ -19,27 +21,22 @@ import { Text } from 'src/ui/text';
 import { useOverlayClose } from 'src/ui/select/hooks/UseOverlayClose';
 import { useEscClose } from 'src/ui/select/hooks/useEscClose';
 
-export type ParametersSelected = {
-	fontFamilyOption: OptionType;
-	fontSizeOption: OptionType;
-	fontColor: OptionType;
-	contentWidth: OptionType;
-	backgroundColor: OptionType;
-};
-
-type ArticleParamsFormProps = {
-	options: ParametersSelected;
-	changeOptions: (selected: OptionType, par: string | undefined) => void;
-	changeStyle: (event: React.MouseEvent<HTMLButtonElement> | undefined) => void;
-	resetStyles: (event: React.MouseEvent<HTMLButtonElement> | undefined) => void;
-};
-
 export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
-	const { changeOptions, options, changeStyle, resetStyles } = props;
+	const { changeStyle, resetStyles } = props;
 	const [isOpen, setOpen] = useState(false);
+	const [select, setSelect] = useState(defaultArticleState);
 	const rootRef = useRef<HTMLDivElement>(null);
 	const handleOpeningSideBar = () => {
 		setOpen((prevState) => !prevState);
+	};
+
+	const changeOptions = (option: OptionType, name: string | undefined) => {
+		if (typeof name === 'string') {
+			setSelect({
+				...select,
+				[name]: option,
+			});
+		}
 	};
 
 	useOverlayClose({
@@ -53,6 +50,19 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 		onChange: setOpen,
 	});
 
+	const handleSubmit = (event: React.FormEvent) => {
+		event.preventDefault();
+		changeStyle(select);
+	};
+
+	const reset = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
+		if (event) {
+			event.preventDefault();
+			setSelect({ ...defaultArticleState });
+			resetStyles();
+		}
+	};
+
 	return (
 		<>
 			<ArrowButton isOpen={isOpen} onClick={handleOpeningSideBar} />
@@ -61,13 +71,13 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 				className={clsx(styles.container, {
 					[styles.container_open]: isOpen,
 				})}>
-				<form className={styles.form}>
+				<form className={styles.form} onSubmit={handleSubmit}>
 					<div className={styles.gridWrapper}>
 						<Text as='h1' size={31} weight={800} uppercase>
 							задайте параметры
 						</Text>
 						<Select
-							selected={options.fontFamilyOption}
+							selected={select.fontFamilyOption}
 							options={fontFamilyOptions}
 							title='шрифт'
 							onChange={changeOptions}
@@ -76,13 +86,13 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						<RadioGroup
 							name='sizeFont'
 							options={fontSizeOptions}
-							selected={options.fontSizeOption}
+							selected={select.fontSizeOption}
 							title='размер шрифта'
 							onChange={changeOptions}
 							id='fontSizeOption'
 						/>
 						<Select
-							selected={options.fontColor}
+							selected={select.fontColor}
 							options={fontColors}
 							title='цвет шрифта'
 							onChange={changeOptions}
@@ -90,14 +100,14 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						/>
 						<Separator />
 						<Select
-							selected={options.backgroundColor}
+							selected={select.backgroundColor}
 							options={backgroundColors}
 							title='цвет фона'
 							onChange={changeOptions}
 							id='backgroundColor'
 						/>
 						<Select
-							selected={options.contentWidth}
+							selected={select.contentWidth}
 							options={contentWidthArr}
 							title='ширина контента'
 							onChange={changeOptions}
@@ -109,14 +119,9 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 							title='Сбросить'
 							htmlType='reset'
 							type='clear'
-							onClick={resetStyles}
+							onClick={reset}
 						/>
-						<Button
-							title='Применить'
-							htmlType='submit'
-							type='apply'
-							onClick={changeStyle}
-						/>
+						<Button title='Применить' htmlType='submit' type='apply' />
 					</div>
 				</form>
 			</aside>

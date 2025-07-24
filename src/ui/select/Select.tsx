@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import type { MouseEventHandler } from 'react';
 import clsx from 'clsx';
-import { OptionType } from 'src/constants/articleProps';
+import { OptionType, SelectProps } from 'src/constants/articleProps';
 import { Text } from 'src/ui/text';
 import arrowDown from 'src/images/arrow-down.svg';
 import { Option } from './Option';
@@ -10,16 +10,6 @@ import { useEnterSubmit } from './hooks/useEnterSubmit';
 import { useOutsideClickClose } from './hooks/useOutsideClickClose';
 
 import styles from './Select.module.scss';
-
-type SelectProps = {
-	selected: OptionType | null;
-	options: OptionType[];
-	placeholder?: string;
-	onChange?: (option: OptionType, name: string | undefined) => void;
-	onClose?: () => void;
-	title?: string;
-	id?: string;
-};
 
 export const Select = (props: SelectProps) => {
 	const { options, placeholder, selected, onChange, onClose, title, id } =

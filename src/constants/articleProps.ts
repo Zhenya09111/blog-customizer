@@ -15,6 +15,41 @@ export type OptionType = {
 	optionClassName?: string;
 };
 
+export type UseEnterOptionSubmit = {
+	onClick: (value: OptionType['value']) => void;
+	value: OptionType['value'];
+	optionRef: React.RefObject<HTMLLIElement>;
+};
+
+export type UseEnterSubmit = {
+	onChange: React.Dispatch<React.SetStateAction<boolean>>;
+	placeholderRef: React.RefObject<HTMLDivElement>;
+};
+
+export type SelectProps = {
+	selected: OptionType | null;
+	options: OptionType[];
+	placeholder?: string;
+	onChange?: (option: OptionType, name: string | undefined) => void;
+	onClose?: () => void;
+	title?: string;
+	id?: string;
+};
+
+export type ArticleParamsFormProps = {
+	changeStyle: (options: ArticleStateType) => void;
+	resetStyles: () => void;
+};
+
+export type OptionProps = {
+	value: OptionType['value'];
+	title: OptionType['title'];
+	selected: OptionType;
+	groupName: string;
+	onChange?: (option: OptionType) => void;
+	option: OptionType;
+};
+
 export const fontFamilyOptions: OptionType[] & {
 	optionClassName?: FontFamiliesClasses;
 } = [
