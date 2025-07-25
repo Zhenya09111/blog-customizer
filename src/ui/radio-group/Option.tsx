@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { OptionProps } from 'src/constants/articleProps';
+import { ChangeEventHandler, useRef } from 'react';
+import { OptionProps, OptionType } from 'src/constants/articleProps';
 import { Text } from 'src/ui/text';
 import { useEnterSubmit } from './hooks/useEnterSubmit';
 
@@ -10,7 +10,11 @@ export const Option = (props: OptionProps) => {
 
 	const optionRef = useRef<HTMLDivElement>(null);
 
-	const handleChange = () => onChange?.(option);
+	const handleChange =
+		(option: OptionType): ChangeEventHandler<HTMLInputElement> =>
+		() => {
+			onChange?.(option);
+		};
 
 	useEnterSubmit({ onChange, option });
 
@@ -31,8 +35,9 @@ export const Option = (props: OptionProps) => {
 				name={groupName}
 				id={inputId}
 				value={value}
-				onChange={handleChange}
+				onChange={handleChange(option)}
 				tabIndex={-1}
+				checked={selected.title === value}
 			/>
 			<label className={styles.label} htmlFor={inputId}>
 				<Text size={18} uppercase>
