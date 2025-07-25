@@ -22,7 +22,7 @@ import { useOverlayClose } from 'src/ui/select/hooks/UseOverlayClose';
 import { useEscClose } from 'src/ui/select/hooks/useEscClose';
 
 export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
-	const { changeStyle, resetStyles } = props;
+	const { setPageStyle } = props;
 	const [isOpen, setOpen] = useState(false);
 	const [select, setSelect] = useState(defaultArticleState);
 	const rootRef = useRef<HTMLDivElement>(null);
@@ -52,15 +52,13 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
-		changeStyle(select);
+		setPageStyle({ ...select });
 	};
 
-	const reset = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
-		if (event) {
-			event.preventDefault();
-			setSelect({ ...defaultArticleState });
-			resetStyles();
-		}
+	const reset = (event: React.FormEvent) => {
+		event.preventDefault();
+		setPageStyle({ ...defaultArticleState });
+		setSelect({ ...defaultArticleState });
 	};
 
 	return (
@@ -71,7 +69,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 				className={clsx(styles.container, {
 					[styles.container_open]: isOpen,
 				})}>
-				<form className={styles.form} onSubmit={handleSubmit}>
+				<form className={styles.form} onSubmit={handleSubmit} onReset={reset}>
 					<div className={styles.gridWrapper}>
 						<Text as='h1' size={31} weight={800} uppercase>
 							задайте параметры
@@ -115,12 +113,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						/>
 					</div>
 					<div className={styles.bottomContainer}>
-						<Button
-							title='Сбросить'
-							htmlType='reset'
-							type='clear'
-							onClick={reset}
-						/>
+						<Button title='Сбросить' htmlType='reset' type='clear' />
 						<Button title='Применить' htmlType='submit' type='apply' />
 					</div>
 				</form>

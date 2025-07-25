@@ -17,7 +17,7 @@ type RadioGroupProps = {
 export const RadioGroup = (props: RadioGroupProps) => {
 	const { name, options, selected, onChange, title, id } = props;
 	const radioGroupRef = useRef<HTMLDivElement>(null);
-	// const handleChange = (option: OptionType) => onChange?.(option);
+
 	const handleChange = (option: OptionType, name: string | undefined) => {
 		onChange?.(option, name);
 	};

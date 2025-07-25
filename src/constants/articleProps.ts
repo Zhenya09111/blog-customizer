@@ -37,8 +37,7 @@ export type SelectProps = {
 };
 
 export type ArticleParamsFormProps = {
-	changeStyle: (options: ArticleStateType) => void;
-	resetStyles: () => void;
+	setPageStyle: (value: ArticleStateType) => void;
 };
 
 export type OptionProps = {
