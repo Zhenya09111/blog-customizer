@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import type { MouseEventHandler } from 'react';
 import clsx from 'clsx';
-import { OptionType } from 'src/constants/articleProps';
+import { OptionType, SelectProps } from 'src/constants/articleProps';
 import { Text } from 'src/ui/text';
 import arrowDown from 'src/images/arrow-down.svg';
 import { Option } from './Option';
@@ -11,17 +11,9 @@ import { useOutsideClickClose } from './hooks/useOutsideClickClose';
 
 import styles from './Select.module.scss';
 
-type SelectProps = {
-	selected: OptionType | null;
-	options: OptionType[];
-	placeholder?: string;
-	onChange?: (selected: OptionType) => void;
-	onClose?: () => void;
-	title?: string;
-};
-
 export const Select = (props: SelectProps) => {
-	const { options, placeholder, selected, onChange, onClose, title } = props;
+	const { options, placeholder, selected, onChange, onClose, title, id } =
+		props;
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const rootRef = useRef<HTMLDivElement>(null);
 	const placeholderRef = useRef<HTMLDivElement>(null);
@@ -39,9 +31,9 @@ export const Select = (props: SelectProps) => {
 		onChange: setIsOpen,
 	});
 
-	const handleOptionClick = (option: OptionType) => {
-		setIsOpen(false);
-		onChange?.(option);
+	const handleOptionClick = (option: OptionType, par: string | undefined) => {
+		onChange?.(option, par);
+		setIsOpen((isOpen) => !isOpen);
 	};
 	const handlePlaceHolderClick: MouseEventHandler<HTMLDivElement> = () => {
 		setIsOpen((isOpen) => !isOpen);
@@ -67,6 +59,7 @@ export const Select = (props: SelectProps) => {
 						styles.placeholder,
 						(styles as Record<string, string>)[optionClassName]
 					)}
+					data-id={id}
 					data-status={status}
 					data-selected={!!selected?.value}
 					onClick={handlePlaceHolderClick}
@@ -90,7 +83,12 @@ export const Select = (props: SelectProps) => {
 								<Option
 									key={option.value}
 									option={option}
-									onClick={() => handleOptionClick(option)}
+									onClick={() =>
+										handleOptionClick(
+											option,
+											placeholderRef.current?.dataset.id
+										)
+									}
 								/>
 							))}
 					</ul>
